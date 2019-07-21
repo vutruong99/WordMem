@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Wordmem</string>
+    <string name="main_msg_word">Word</string>
+    <string name="main_hint_word">Enter word</string>
+    <string name="main_msg_def">Definition</string>
+    <string name="main_hint_def">Enter definition</string>
+    <string name="main_btn_add">Add</string>
+    <string name="main_btn_view">View</string>
+    <string name="main_btn_edit">Edit</string>
+
+    <string name="adapter_texview1">TextView1</string>
+    <string name="adapter_texview2">TextView2</string>
+    <string name="adapter_texview3">TextView3</string>
+    <string name="save_data_text">SAVE</string>
+    <string name="delete_data_text">DELETE</string>
+
+</resources>
