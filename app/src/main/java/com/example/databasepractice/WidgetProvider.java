@@ -25,8 +25,8 @@ public class WidgetProvider extends AppWidgetProvider {
 
         for (int appWidgetId : appWidgetIds) {
             myDb = new DatabaseHandler(context);
-            int dL = myDb.length(); //database's length (number of rows)
-            int counterForStop = 0; //if this counter exceeds the dL, that means theres no data left
+            int dL = myDb.lastID(); //ID of last word
+            int counterForStop = 0; //if this counter exceeds the dL, that means there's no data left
 
             mSharedPrefs = context.getSharedPreferences("sharedPrefs",0); //Initialize the SharedPreference variable
             mEditor = mSharedPrefs.edit();
@@ -45,13 +45,17 @@ public class WidgetProvider extends AppWidgetProvider {
             //mSharedPrefs.getInt("counter,0") should return 1
             while (myDb.getData(mSharedPrefs.getInt("counter",0)) == "null") {
                 counterForStop++;
+                Log.d("mSharedPrefs.getInt()",""+mSharedPrefs.getInt("counter",0));
+                Log.d("LAST ID",""+dL);
                 Log.d("CounterForStop", "" + counterForStop);
                 if (counterForStop>=dL) { //If no more data then reset the list to word(1)
+                    // This means that the counter has passed through the largest possible number of data in the table
                     mEditor.putInt("counter",1);
                     mEditor.apply();
                     k=mSharedPrefs.getInt("counter",0);
                     Log.d("Counter after if loop", "" + k);
                     break;
+
                 }
                 //if the there is no data at column, increase counter
                 Log.d("TEST if k is increased", "" + mSharedPrefs.getInt("counter",0));
@@ -61,6 +65,7 @@ public class WidgetProvider extends AppWidgetProvider {
             }
 
             views.setCharSequence(R.id.button, "setText", myDb.getData(k)); //k=1
+            Log.d("post word displayed",""+k);
             mEditor.putInt("counter",k+1); //increase counter for next update
             mEditor.apply();
             Log.d("TEST TEST", "" + mSharedPrefs.getInt("counter",0));

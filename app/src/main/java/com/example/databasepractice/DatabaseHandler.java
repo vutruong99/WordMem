@@ -165,4 +165,19 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         return length;
     }
 
+    public int lastID() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT ID FROM " + TABLE_NAME + " ORDER BY " + COLUMN_ID +" DESC LIMIT 1";
+        Cursor cursor = db.rawQuery(query,null);
+        int lastID = 0;
+
+        if (cursor.getCount()>0) {
+            cursor.moveToFirst();
+            lastID =cursor.getInt(0);
+        }
+        cursor.close();
+
+        return lastID;
+    }
+
 }
