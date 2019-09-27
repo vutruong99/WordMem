@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
         addWord();
         //viewAll();
 
+
+        //View list of words
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         return res.getString(0);
     }
 
-
+    //Add new word to list
     public void addWord() {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public int length() {
+        return myDb.length();
+    }
     /*public void viewAll() {
         view.setOnClickListener(new View.OnClickListener() {
             @Override

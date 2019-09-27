@@ -25,7 +25,7 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-
+    //Create a table on installing app
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = " CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
@@ -37,12 +37,14 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
 
     }
 
+    //Update app
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
 
+    //Insert new pair of word and definition
     public boolean insertData(String word, String def) {
         db = this.getReadableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -54,7 +56,8 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         else return true;
     }
 
-    public String getData(int i) {
+    //Get word to display on Widget
+    public String getData(int i) { //Get word with id i in the table
         StringBuffer buffer = new StringBuffer();
         db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_ID + " = "+ i, null);
@@ -78,7 +81,7 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         return cursor;
     }
 
-    public ArrayList<Dictionary> getAllData() {
+    public ArrayList<Dictionary> getAllData() { //Create array list to display words and definitions
         ArrayList<Dictionary> arrayList = new ArrayList<>();
         db = this.getReadableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
@@ -94,7 +97,7 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         }
         return arrayList;
     }
-
+//
     public Cursor getItemId(Long COLID) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM "+ TABLE_NAME +" WHERE " + COLUMN_ID+ " = " + COLID;
@@ -102,6 +105,7 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         return data;
     }
 
+    //Edit word by updating table
     public void update(String newWord,  int id, String oldWord, String newDef, String oldDef) {
         SQLiteDatabase db = this.getWritableDatabase();
         String queryWord = "UPDATE " + TABLE_NAME + " SET " + COLUMN_WORD +
@@ -118,7 +122,7 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         db.execSQL(queryDef);
 
     }
-
+    //Delete word
     public void delete(int id, String word, String def){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "DELETE FROM " + TABLE_NAME + " WHERE "
@@ -129,6 +133,7 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
         db.execSQL(query);
     }
 
+    //Check if table exists
     public boolean doesTableExist(SQLiteDatabase db, String tableName) {
         Cursor cursor = db.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '" + tableName + "'", null);
 
@@ -140,6 +145,24 @@ public class DatabaseHandler extends SQLiteOpenHelper  {
             cursor.close();
         }
         return false;
+    }
+
+    //Return database's length
+    public int length() {
+        int length = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT COUNT(*) FROM " + TABLE_NAME;
+        Cursor cursor = db.rawQuery(query,null);
+
+        if (cursor.getCount()>0) {
+            cursor.moveToFirst();
+            length=cursor.getInt(0 );
+        }
+
+        cursor.close();
+        Log.d("Database length:", "" + length);
+
+        return length;
     }
 
 }

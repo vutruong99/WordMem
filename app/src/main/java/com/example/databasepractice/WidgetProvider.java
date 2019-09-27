@@ -17,19 +17,22 @@ public class WidgetProvider extends AppWidgetProvider {
     int k = 0;
     private SharedPreferences mSharedPrefs;
     private SharedPreferences.Editor mEditor;
+    DatabaseHandler myDb;
 
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
         for (int appWidgetId : appWidgetIds) {
+            myDb = new DatabaseHandler(context);
+            int dL = myDb.length(); //database's length (number of rows)
+            int counterForStop = 0; //if this counter exceeds the dL, that means theres no data left
 
-
-            mSharedPrefs = context.getSharedPreferences("sharedPrefs",0);
+            mSharedPrefs = context.getSharedPreferences("sharedPrefs",0); //Initialize the SharedPreference variable
             mEditor = mSharedPrefs.edit();
 
-            k = mSharedPrefs.getInt("counter",1); // k=1 the first time
-            Log.d("TEST FUCKING TEST", "" + k);
+            k = mSharedPrefs.getInt("counter",1); // k=1 the first time, next time k will be increased
+            Log.d("TEST k after first time", "" + k);
             Toast.makeText(context, "Widget has been updated! ", Toast.LENGTH_SHORT).show();
             DatabaseHandler myDb = new DatabaseHandler(context);
             Intent intent = new Intent(context, MainActivity.class);
@@ -39,19 +42,28 @@ public class WidgetProvider extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.button, pendingIntent);
 
 
+            //mSharedPrefs.getInt("counter,0") should return 1
             while (myDb.getData(mSharedPrefs.getInt("counter",0)) == "null") {
+                counterForStop++;
+                Log.d("CounterForStop", "" + counterForStop);
+                if (counterForStop>=dL) { //If no more data then reset the list to word(1)
+                    mEditor.putInt("counter",1);
+                    mEditor.apply();
+                    k=mSharedPrefs.getInt("counter",0);
+                    Log.d("Counter after if loop", "" + k);
+                    break;
+                }
                 //if the there is no data at column, increase counter
+                Log.d("TEST if k is increased", "" + mSharedPrefs.getInt("counter",0));
                 mEditor.putInt("counter",k+1);
                 mEditor.apply();
                 k++;
             }
 
-
-
             views.setCharSequence(R.id.button, "setText", myDb.getData(k)); //k=1
             mEditor.putInt("counter",k+1); //increase counter for next update
             mEditor.apply();
-            Log.d("TEST FUCKING TEST", "" + mSharedPrefs.getInt("counter",0));
+            Log.d("TEST TEST", "" + mSharedPrefs.getInt("counter",0));
             appWidgetManager.updateAppWidget(appWidgetId, views);
 
         }
